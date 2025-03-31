@@ -24,7 +24,8 @@
     "styled-components": "^5.3.0"
   },
   "devDependencies": {
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.9",
+    "gh-pages": "^6.1.1"
   },
   "resolutions": {
     "//": "See https://github.com/facebook/create-react-app/issues/11773",
@@ -32,9 +33,12 @@
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build && gulp postbuild && gulp rename",
+    "build": "react-scripts --openssl-legacy-provider build && gulp postbuild && gulp rename",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    
+    "predeploy": "react-scripts --openssl-legacy-provider build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
