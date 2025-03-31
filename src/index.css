@@ -1,0 +1,32 @@
+* {
+  touch-action: pan-y;
+}
+
+html, body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+pre {
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+
+.background {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  background-color: #333333;
+  min-height: 100vh;
+  margin:0px;
+  padding:0px;
+}
+
+.stickyheader {
+  position: sticky !important;
+  top: 0;
+  z-index: 2;
+}
