@@ -36,8 +36,9 @@ export default function Calced(){
     charts.calc();
 
     const takeoffMAC = toMAC(calcArm(aircraft.readOnly.operatingWeight+cargoWeight+fuel.takeoff.readOnly.totalFuel, aircraft.readOnly.operatingMoment+cargoMoment+fuel.takeoff.readOnly.totalMoment));
-    const takeoffForwardCG = charts.$externalFuelforwardCG.value;
-    const takeoffAftCG = charts.$externalFuelAftCG.value;
+    const takeoffHasFuelInExternals = fuel.takeoff.lext>0 || fuel.takeoff.rext>0;
+    const takeoffForwardCG = takeoffHasFuelInExternals ? charts.$externalFuelforwardCG.value : charts.$noExternalFuelForwardCG.value;
+    const takeoffAftCG = takeoffHasFuelInExternals ? charts.$externalFuelAftCG.value : charts.$noExternalFuelAftCG.value;
     const takeoffOpArea = displayOpArea(charts.$operatingAreaFoamExtAR.value);
     console.log(charts.$operatingAreaFoamExtAR);
 
@@ -45,8 +46,9 @@ export default function Calced(){
     charts.calc();
 
     const landingMAC = toMAC(calcArm(aircraft.readOnly.operatingWeight+cargoWeight+fuel.landing.readOnly.totalFuel, aircraft.readOnly.operatingMoment+cargoMoment+fuel.landing.readOnly.totalMoment));
-    const landingForwardCG = charts.$externalFuelforwardCG.value;
-    const landingAftCG = charts.$externalFuelAftCG.value;
+    const landingHasFuelInExternals = fuel.landing.lext>0 || fuel.landing.rext>0;
+    const landingForwardCG = landingHasFuelInExternals ? charts.$externalFuelforwardCG.value : charts.$noExternalFuelForwardCG.value;
+    const landingAftCG = landingHasFuelInExternals ? charts.$externalFuelAftCG.value : charts.$noExternalFuelAftCG.value;
     const landingOpArea = displayOpArea(charts.$operatingAreaFoamExtAR.value);
     return (
         <>
@@ -103,8 +105,8 @@ export default function Calced(){
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell textAlign='center'>Op Area</Table.HeaderCell>
-                        <Table.HeaderCell textAlign='center'>For CG Limit</Table.HeaderCell>
-                        <Table.HeaderCell textAlign='center'>Aft CG Limit</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'>For CG Limit {takeoffHasFuelInExternals?'(ext has fuel)':'(no ext fuel)'}</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'>Aft CG Limit {takeoffHasFuelInExternals?'(ext has fuel)':'(no ext fuel)'}</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -135,8 +137,8 @@ export default function Calced(){
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell textAlign='center'>Op Area</Table.HeaderCell>
-                        <Table.HeaderCell textAlign='center'>For CG Limit</Table.HeaderCell>
-                        <Table.HeaderCell textAlign='center'>Aft CG Limit</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'>For CG Limit {landingHasFuelInExternals?'(ext has fuel)':'(no ext fuel)'}</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'>Aft CG Limit {landingHasFuelInExternals?'(ext has fuel)':'(no ext fuel)'}</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
