@@ -7,7 +7,7 @@ const fs = require('fs');
 
 const buildDir = __dirname+path.sep+'build'+path.sep;   //Customize this to meet your needs
 const buildFileName = "index.html";                     //and this one as well
-const finalBuildName="WAB For Ref Use Only.html";
+const finalBuildName="../spa/CWAB.html";
 
 
 const fileRegEx = /["']\/?([\w-// /.]+\.(ico|png|jpg|jpeg|svg|json))["']/gi
