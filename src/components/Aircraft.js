@@ -1,17 +1,19 @@
 import TouchInput from '@dteel/touch-input'
-import { Table, Input, Button, Header } from 'semantic-ui-react';
+import { Table, Input, Button, Header, Icon, ModalHeader, ModalDescription, ModalContent, ModalActions } from 'semantic-ui-react';
 
 import {useState} from 'react';
 
-import { calcArm, calcMoment } from '../common';
+import { calcArm, calcMoment, toMAC } from '../common';
+import CrewCalcModal from './CrewCalcModal';
 
 const noPadCell={padding:'1px', border:'none'};
 const deleteCell={padding:'0px 4px 0px 0px', border:'none'};
 const inputStyle={style:{paddingLeft:'5px', paddingRight:'5px'}};
 
 
+
 export default function Aircraft({aircraft, aircraftDispatch}){
-  
+
     return (
         <>
             <Header textAlign='center'>
@@ -45,12 +47,13 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                     </Table.Row>
                 </Table.Body>
             </Table>
-            <Table unstackable style={{maxWidth: '650px'}}>
+            <Table unstackable style={{maxWidth: '650px'}} columns={3}>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell textAlign='center'>Crew Weight</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Moment</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Arm</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -70,6 +73,11 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                                 aircraftDispatch('set', {...aircraft, crewMoment: calcMoment(aircraft.crewWeight, v)})
                             }} fluid type='number' title='Crew Arm' input={inputStyle}/>
                         </Table.Cell>
+                        <Table.Cell>
+                            <CrewCalcModal setCrewData={({weight, moment})=>{
+                                aircraftDispatch('set', {...aircraft, crewWeight: weight, crewMoment: moment})
+                            }}/>
+                        </Table.Cell>
                     </Table.Row>
                 </Table.Body>
                 <Table.Header>
@@ -77,6 +85,7 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                         <Table.HeaderCell textAlign='center'>Crew Bag Weight</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Moment</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Arm</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -103,6 +112,7 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                         <Table.HeaderCell textAlign='center'>Stewards Weight</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Moment</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Arm</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -129,6 +139,7 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                         <Table.HeaderCell textAlign='center'>Emerg Weight</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Moment</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Arm</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -155,6 +166,7 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                         <Table.HeaderCell textAlign='center'>Extra Weight</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Moment</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Arm</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -184,6 +196,7 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                         <Table.HeaderCell textAlign='center'>Op Weight</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Moment</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Arm</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'>%MAC</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -196,6 +209,9 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                         </Table.Cell>
                         <Table.Cell textAlign='center'>
                             {calcArm(aircraft.readOnly.operatingWeight, aircraft.readOnly.operatingMoment)}
+                        </Table.Cell>
+                        <Table.Cell textAlign='center'>
+                            {toMAC(calcArm(aircraft.readOnly.operatingWeight, aircraft.readOnly.operatingMoment))}%
                         </Table.Cell>
                     </Table.Row>
                 </Table.Body>
