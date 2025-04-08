@@ -7,6 +7,7 @@ import useFuelReducer from "../reducers/fuelReducer";
 import ChartProject from '../charts';
 
 import { toMAC, calcArm, displayVal } from '../common';
+import { useState } from 'react';
 
 const charts = new ChartProject();
 
@@ -22,6 +23,7 @@ export default function Calced(){
     const [aircraft, aircraftDispatch] = useAircraftReducer(1000);
     const [fuel, fuelDispatch] = useFuelReducer(1000);
     const [cargo, cargoDispatch] = useCargoReducer(1000);
+    const [whichOpArea, setWhichOpArea] = useState('A');
 
     let cargoWeight=0;
     let cargoMoment=0;
@@ -31,7 +33,8 @@ export default function Calced(){
     }
 
     charts.$operatingWeight.input=aircraft.readOnly.operatingWeight;
-    charts.$fuelWeight.input=fuel.takeoff.readOnly.totalFuel;
+    charts.$fuelTakeoffWeight.input=fuel.takeoff.readOnly.totalFuel;
+    charts.$fuelLandingWeight.input=fuel.landing.readOnly.totalFuel;
     charts.$cargoWeight.input=cargoWeight;
     charts.calc();
 
@@ -39,17 +42,24 @@ export default function Calced(){
     const takeoffHasFuelInExternals = fuel.takeoff.lext>0 || fuel.takeoff.rext>0;
     const takeoffForwardCG = takeoffHasFuelInExternals ? charts.$externalFuelforwardCG.value : charts.$noExternalFuelForwardCG.value;
     const takeoffAftCG = takeoffHasFuelInExternals ? charts.$externalFuelAftCG.value : charts.$noExternalFuelAftCG.value;
-    const takeoffOpArea = displayOpArea(charts.$operatingAreaFoamExtAR.value);
-    console.log(charts.$operatingAreaFoamExtAR);
+    const takeoffOpArea = displayOpArea(charts.$operatingArea.value);
 
-    charts.$fuelWeight.input=fuel.landing.readOnly.totalFuel;
+    const limitingFuelMaxZFW = {
+        A: charts.$areaAMaxZFWOverall.value,
+        B: charts.$areaBMaxZFWOverall.value,
+        C: charts.$areaCMaxZFWOverall.value,
+        D: charts.$areaDMaxZFWOverall.value
+    }
+
+
+    charts.$fuelTakeoffWeight.input=fuel.landing.readOnly.totalFuel;
     charts.calc();
 
     const landingMAC = toMAC(calcArm(aircraft.readOnly.operatingWeight+cargoWeight+fuel.landing.readOnly.totalFuel, aircraft.readOnly.operatingMoment+cargoMoment+fuel.landing.readOnly.totalMoment));
     const landingHasFuelInExternals = fuel.landing.lext>0 || fuel.landing.rext>0;
     const landingForwardCG = landingHasFuelInExternals ? charts.$externalFuelforwardCG.value : charts.$noExternalFuelForwardCG.value;
     const landingAftCG = landingHasFuelInExternals ? charts.$externalFuelAftCG.value : charts.$noExternalFuelAftCG.value;
-    const landingOpArea = displayOpArea(charts.$operatingAreaFoamExtAR.value);
+    const landingOpArea = displayOpArea(charts.$operatingArea.value);
     return (
         <>
             <Header textAlign='center'>
@@ -146,6 +156,31 @@ export default function Calced(){
                         <Table.Cell textAlign='center'>{landingOpArea}</Table.Cell>
                         <Table.Cell textAlign='center'>{displayVal(landingForwardCG,1)}%</Table.Cell>
                         <Table.Cell textAlign='center'>{displayVal(landingAftCG,1)}%</Table.Cell>
+                    </Table.Row>
+                </Table.Body>
+            </Table>
+            
+            <Table unstackable style={{maxWidth: '650px'}}>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell textAlign='center'>A Max ZFW/Cargo</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'>B Max ZFW/Cargo</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'>C Max ZFW/Cargo</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'>D Max ZFW/Cargo</Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    <Table.Row>
+                        <Table.Cell textAlign='center'>{displayVal(limitingFuelMaxZFW.A)}</Table.Cell>
+                        <Table.Cell textAlign='center'>{displayVal(limitingFuelMaxZFW.B)}</Table.Cell>
+                        <Table.Cell textAlign='center'>{displayVal(limitingFuelMaxZFW.C)}</Table.Cell>
+                        <Table.Cell textAlign='center'>{displayVal(limitingFuelMaxZFW.D)}</Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.Cell textAlign='center'>{displayVal(limitingFuelMaxZFW.A-aircraft.readOnly.operatingWeight)}</Table.Cell>
+                        <Table.Cell textAlign='center'>{displayVal(limitingFuelMaxZFW.B-aircraft.readOnly.operatingWeight)}</Table.Cell>
+                        <Table.Cell textAlign='center'>{displayVal(limitingFuelMaxZFW.C-aircraft.readOnly.operatingWeight)}</Table.Cell>
+                        <Table.Cell textAlign='center'>{displayVal(limitingFuelMaxZFW.D-aircraft.readOnly.operatingWeight)}</Table.Cell>
                     </Table.Row>
                 </Table.Body>
             </Table>
