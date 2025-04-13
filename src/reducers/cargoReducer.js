@@ -3,7 +3,7 @@ import { useStoredReducer } from "@dteel/use-stored-reducer";
 import { calcArm, getUniqueId, isAboutEquals, isGoodObject } from "../common";
 
 function blankItem(){
-    return {name:'', weight: 0, moment: 0, arm: 0};
+    return {name:'', weight: 0, moment: 0, arm: 0, expended: false};
 }
 
 function sanitizeCargo(cargo){
@@ -11,6 +11,7 @@ function sanitizeCargo(cargo){
         item.weight=Number(item.weight);
         item.moment=Number(item.moment);
         item.arm=Number(item.arm);
+        item.expended=Boolean(item.expended);
     }
     return cargo;
 }
@@ -29,6 +30,7 @@ function cargoReducer(state, action, payload, callback){
             payload.weight=Number(payload.weight);
             payload.moment=Number(payload.moment);
             payload.arm=Number(payload.arm);
+            payload.expended=Boolean(payload.expended);
 
             const expectedArm = calcArm(payload.weight, payload.moment);
             if (!isAboutEquals(expectedArm, payload.arm, 0.1)){

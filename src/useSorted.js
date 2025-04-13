@@ -38,6 +38,8 @@ function getSortedList(sorted, sortDetails, list, sortGetterArgs){
                     return sorted.dir * String(aVal).localeCompare(String(bVal));
                 }else if (sortDetail.type==='date'){
                     return sorted.dir * (new Date(aVal) - new Date(bVal));
+                }else if (sortDetail.type==='bool'){
+                    return sorted.dir * ((aVal?1:0)-(bVal?1:0));
                 }
                 console.warn("useSorted: attempting to sort with unknown sort type '"+sortDetail.type+"'");
                 return 0;

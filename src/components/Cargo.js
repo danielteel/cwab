@@ -1,6 +1,6 @@
 
 import TouchInput from '@dteel/touch-input'
-import { Table, Input, Button } from 'semantic-ui-react';
+import { Table, Input, Button, Checkbox } from 'semantic-ui-react';
 import {useState} from 'react';
 
 import {useSorted} from '../useSorted';
@@ -20,7 +20,8 @@ const sortDetails=[
     {key: 'name', type: 'string'},
     {key: 'weight', type: 'number'},
     {key: 'moment', type: 'number'},
-    {key: 'arm', type: 'number'}
+    {key: 'arm', type: 'number'},
+    {key: 'expended', type: 'bool'}
 ];
 
 export default function Cargo({cargo, cargoDispatch}){
@@ -65,7 +66,7 @@ export default function Cargo({cargo, cargoDispatch}){
             <Table unstackable style={{maxWidth: '768px'}} sortable>
                 <Table.Header className='stickyheader'>
                     <Table.Row>
-                        <Table.HeaderCell colSpan='5'>
+                        <Table.HeaderCell colSpan='6'>
                             <div style={{display:'flex', alignItems:'center'}}>
                                 <Button.Group vertical>
                                     <Button icon='add' labelPosition='left' positive size='small' content='New'  onClick={()=>cargoDispatch('create', null)}/>
@@ -76,10 +77,11 @@ export default function Cargo({cargo, cargoDispatch}){
                         </Table.HeaderCell>
                     </Table.Row>
                     <Table.Row>
-                        <Table.HeaderCell width={6} sorted={matchSort('name')}   onClick={()=>sortBy('name')}  >Name  </Table.HeaderCell>
-                        <Table.HeaderCell width={3} sorted={matchSort('weight')} onClick={()=>sortBy('weight')}>Weight</Table.HeaderCell>
-                        <Table.HeaderCell width={3} sorted={matchSort('moment')} onClick={()=>sortBy('moment')}>Moment</Table.HeaderCell>
-                        <Table.HeaderCell width={3} sorted={matchSort('arm')}    onClick={()=>sortBy('arm')}   >Arm   </Table.HeaderCell>
+                        <Table.HeaderCell width={6} sorted={matchSort('name')}     onClick={()=>sortBy('name')}>Name  </Table.HeaderCell>
+                        <Table.HeaderCell width={3} sorted={matchSort('weight')}   onClick={()=>sortBy('weight')}>Weight</Table.HeaderCell>
+                        <Table.HeaderCell width={3} sorted={matchSort('moment')}   onClick={()=>sortBy('moment')}>Moment</Table.HeaderCell>
+                        <Table.HeaderCell width={2} sorted={matchSort('arm')}      onClick={()=>sortBy('arm')}>Arm   </Table.HeaderCell>
+                        <Table.HeaderCell width={1} sorted={matchSort('expended')} onClick={()=>sortBy('expended')}>Exp   </Table.HeaderCell>
                         <Table.HeaderCell collapsing width={1} onClick={()=>sortBy(null)}></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
@@ -102,6 +104,9 @@ export default function Cargo({cargo, cargoDispatch}){
                                     <Table.Cell style={{...noPadCell, textAlign:'center'}}>
                                         <TouchInput as={Input} value={item.arm} onChange={(v)=>cargoDispatch('update', {...item, arm: v, moment: calcMoment(item.weight, v)})} fluid disabled={isAboutEquals(item.weight,0)} type={isAboutEquals(item.weight,0)?null:'number'} title='Arm' input={inputStyle}/>
                                     </Table.Cell>
+                                    <Table.Cell>
+                                        <Checkbox fitted checked={item.expended} onChange={(e, data)=>cargoDispatch('update', {...item, expended: data.checked})}/>
+                                    </Table.Cell>
                                     <Table.Cell style={deleteCell}>
                                         <Button floated='right' icon='minus' negative size='mini' onClick={(e)=>{
                                             setDeleteItemId(item.id);
@@ -111,7 +116,7 @@ export default function Cargo({cargo, cargoDispatch}){
                             ))
                         :
                             <Table.Row style={{textAlign:'center'}}>
-                                <Table.Cell colSpan='5'>
+                                <Table.Cell colSpan='6'>
                                     no items
                                 </Table.Cell>
                             </Table.Row>
@@ -125,6 +130,7 @@ export default function Cargo({cargo, cargoDispatch}){
                                 <Table.Cell>{weightTotal}</Table.Cell>
                                 <Table.Cell>{momentTotal}</Table.Cell>
                                 <Table.Cell>{armTotal}</Table.Cell>
+                                <Table.Cell></Table.Cell>
                                 <Table.Cell></Table.Cell>
                             </Table.Row>
                         </Table.Footer>
