@@ -25,24 +25,41 @@ export default function Calced(){
     const [cargo, cargoDispatch] = useCargoReducer(1000);
     const [whichOpArea, setWhichOpArea] = useState('A');
 
-    let cargoWeight=0;
-    let cargoMoment=0;
+    let cargoWeightTakeoff=0;
+    let cargoMomentTakeoff=0;
+    let cargoWeightLanding=0;
+    let cargoMomentLanding=0;
     for (const item of cargo){
-        cargoWeight+=item.weight;
-        cargoMoment+=item.moment;
+        cargoWeightTakeoff+=item.weight;
+        cargoMomentTakeoff+=item.moment;
+        if (!item.expended){
+            cargoWeightLanding+=item.weight;
+            cargoMomentLanding+=item.moment;
+        }
     }
 
     charts.$operatingWeight.input=aircraft.readOnly.operatingWeight;
-    charts.$fuelTakeoffWeight.input=fuel.takeoff.readOnly.totalFuel;
-    charts.$fuelLandingWeight.input=fuel.landing.readOnly.totalFuel;
-    charts.$cargoWeight.input=cargoWeight;
+    charts.$fuelWeightTakeoff.input=fuel.takeoff.readOnly.totalFuel;
+    charts.$fuelWeightLanding.input=fuel.landing.readOnly.totalFuel;
+    charts.$cargoWeightTakeoff.input=cargoWeightTakeoff;
+    charts.$cargoWeightLanding.input=cargoWeightLanding;
     charts.calc();
 
-    const takeoffMAC = toMAC(calcArm(aircraft.readOnly.operatingWeight+cargoWeight+fuel.takeoff.readOnly.totalFuel, aircraft.readOnly.operatingMoment+cargoMoment+fuel.takeoff.readOnly.totalMoment));
+    const takeoffWeight = aircraft.readOnly.operatingWeight+fuel.takeoff.readOnly.totalFuel+cargoWeightTakeoff;
+    const takeoffMoment = aircraft.readOnly.operatingMoment+fuel.takeoff.readOnly.totalMoment+cargoMomentTakeoff;
+    const takeoffMAC = toMAC(calcArm(takeoffWeight, takeoffMoment));
     const takeoffHasFuelInExternals = fuel.takeoff.lext>0 || fuel.takeoff.rext>0;
-    const takeoffForwardCG = takeoffHasFuelInExternals ? charts.$externalFuelforwardCG.value : charts.$noExternalFuelForwardCG.value;
-    const takeoffAftCG = takeoffHasFuelInExternals ? charts.$externalFuelAftCG.value : charts.$noExternalFuelAftCG.value;
-    const takeoffOpArea = displayOpArea(charts.$operatingArea.value);
+    const takeoffForwardCG = takeoffHasFuelInExternals ? charts.$extForwardCGTakeoff.value : charts.$noExtForwardCGTakeoff.value;
+    const takeoffAftCG = takeoffHasFuelInExternals ? charts.$extAftCGTakeoff.value : charts.$noExtAftCGTakeoff.value;
+    const takeoffOpArea = displayOpArea(charts.$operatingAreaTakeoff.value);
+
+    const landingWeight = aircraft.readOnly.operatingWeight+fuel.landing.readOnly.totalFuel+cargoWeightLanding;
+    const landingMoment = aircraft.readOnly.operatingMoment+fuel.landing.readOnly.totalMoment+cargoMomentLanding;
+    const landingMAC = toMAC(calcArm(landingWeight, landingMoment));
+    const landingHasFuelInExternals = fuel.landing.lext>0 || fuel.landing.rext>0;
+    const landingForwardCG = takeoffHasFuelInExternals ? charts.$extForwardCGLanding.value : charts.$noExtForwardCGLanding.value;
+    const landingAftCG = takeoffHasFuelInExternals ? charts.$extAftCGLanding.value : charts.$noExtAftCGLanding.value;
+    const landingOpArea = displayOpArea(charts.$operatingAreaLanding.value);
 
     const limitingFuelMaxZFW = {
         A: charts.$areaAMaxZFWOverall.value,
@@ -51,15 +68,6 @@ export default function Calced(){
         D: charts.$areaDMaxZFWOverall.value
     }
 
-
-    charts.$fuelTakeoffWeight.input=fuel.landing.readOnly.totalFuel;
-    charts.calc();
-
-    const landingMAC = toMAC(calcArm(aircraft.readOnly.operatingWeight+cargoWeight+fuel.landing.readOnly.totalFuel, aircraft.readOnly.operatingMoment+cargoMoment+fuel.landing.readOnly.totalMoment));
-    const landingHasFuelInExternals = fuel.landing.lext>0 || fuel.landing.rext>0;
-    const landingForwardCG = landingHasFuelInExternals ? charts.$externalFuelforwardCG.value : charts.$noExternalFuelForwardCG.value;
-    const landingAftCG = landingHasFuelInExternals ? charts.$externalFuelAftCG.value : charts.$noExternalFuelAftCG.value;
-    const landingOpArea = displayOpArea(charts.$operatingArea.value);
     return (
         <>
             <Header textAlign='center'>
@@ -84,14 +92,14 @@ export default function Calced(){
                     <Table.Row>
                         <Table.HeaderCell textAlign='center'>Zero Fuel Weight</Table.HeaderCell>
                         <Table.HeaderCell textAlign='center'>Moment</Table.HeaderCell>
-                        <Table.HeaderCell textAlign='center'>%MAC</Table.HeaderCell>
+                        <Table.HeaderCell textAlign='center'></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
                     <Table.Row>
-                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingWeight+cargoWeight}</Table.Cell>
-                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingMoment+cargoMoment}</Table.Cell>
-                        <Table.Cell textAlign='center'>{toMAC(calcArm(aircraft.readOnly.operatingWeight+cargoWeight, aircraft.readOnly.operatingMoment+cargoMoment))}%</Table.Cell>
+                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingWeight+cargoWeightTakeoff}</Table.Cell>
+                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingMoment+cargoMomentTakeoff}</Table.Cell>
+                        <Table.Cell textAlign='center'></Table.Cell>
                     </Table.Row>
                 </Table.Body>
             </Table>
@@ -105,8 +113,8 @@ export default function Calced(){
                 </Table.Header>
                 <Table.Body>
                     <Table.Row>
-                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingWeight+cargoWeight+fuel.takeoff.readOnly.totalFuel}</Table.Cell>
-                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingMoment+cargoMoment+fuel.takeoff.readOnly.totalMoment}</Table.Cell>
+                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingWeight+cargoWeightTakeoff+fuel.takeoff.readOnly.totalFuel}</Table.Cell>
+                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingMoment+cargoMomentTakeoff+fuel.takeoff.readOnly.totalMoment}</Table.Cell>
                         <Table.Cell textAlign='center'>
                             {takeoffMAC}%
                         </Table.Cell>
@@ -137,8 +145,8 @@ export default function Calced(){
                 </Table.Header>
                 <Table.Body>
                     <Table.Row>
-                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingWeight+cargoWeight+fuel.landing.readOnly.totalFuel}</Table.Cell>
-                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingMoment+cargoMoment+fuel.landing.readOnly.totalMoment}</Table.Cell>
+                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingWeight+cargoWeightLanding+fuel.landing.readOnly.totalFuel}</Table.Cell>
+                        <Table.Cell textAlign='center'>{aircraft.readOnly.operatingMoment+cargoMomentLanding+fuel.landing.readOnly.totalMoment}</Table.Cell>
                         <Table.Cell textAlign='center'>
                             {landingMAC}%
                         </Table.Cell>
