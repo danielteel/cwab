@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/cwab/static/css/main.f4bff725.chunk.css",
-    "main.js": "/cwab/static/js/main.b737c2cd.chunk.js",
-    "main.js.map": "/cwab/static/js/main.b737c2cd.chunk.js.map",
+    "main.js": "/cwab/static/js/main.5f004523.chunk.js",
+    "main.js.map": "/cwab/static/js/main.5f004523.chunk.js.map",
     "runtime-main.js": "/cwab/static/js/runtime-main.61d90e95.js",
     "runtime-main.js.map": "/cwab/static/js/runtime-main.61d90e95.js.map",
-    "static/js/2.63e67a56.chunk.js": "/cwab/static/js/2.63e67a56.chunk.js",
-    "static/js/2.63e67a56.chunk.js.map": "/cwab/static/js/2.63e67a56.chunk.js.map",
+    "static/js/2.f72b20bf.chunk.js": "/cwab/static/js/2.f72b20bf.chunk.js",
+    "static/js/2.f72b20bf.chunk.js.map": "/cwab/static/js/2.f72b20bf.chunk.js.map",
     "index.html": "/cwab/index.html",
     "static/css/main.f4bff725.chunk.css.map": "/cwab/static/css/main.f4bff725.chunk.css.map",
-    "static/js/2.63e67a56.chunk.js.LICENSE.txt": "/cwab/static/js/2.63e67a56.chunk.js.LICENSE.txt",
+    "static/js/2.f72b20bf.chunk.js.LICENSE.txt": "/cwab/static/js/2.f72b20bf.chunk.js.LICENSE.txt",
     "static/media/semantic.min.css": "/cwab/static/media/icons.a940d584.woff"
   },
   "entrypoints": [
     "static/js/runtime-main.61d90e95.js",
-    "static/js/2.63e67a56.chunk.js",
+    "static/js/2.f72b20bf.chunk.js",
     "static/css/main.f4bff725.chunk.css",
-    "static/js/main.b737c2cd.chunk.js"
+    "static/js/main.5f004523.chunk.js"
   ]
 }
