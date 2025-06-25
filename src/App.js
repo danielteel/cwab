@@ -10,17 +10,22 @@ import useAircraftReducer from './reducers/aircraftReducer';
 import useSelectedMenuReducer from './reducers/selectedMenuReducer';
 import useCargoReducer from './reducers/cargoReducer';
 import useFuelReducer from './reducers/fuelReducer';
-import Calced from './components/Calced';
+import CPRaw from './components/CPRaw';
+import Output from './components/Output';
+
+import ChartProject from './charts';
 
 const menuItems=[
     {page: 'aircraft', title: 'Aircraft'},
     {page: 'fuel', title: 'Fuel'},
     {page: 'cargo', title: 'Cargo'},
-    {page: 'calced',title: 'Calced'},
+    {page: 'output', title: 'Output'},
+    {page: 'cpraw',title: 'CP Raw'},
     {page: 'options', title: 'Options'},
 ]
 
 
+const chartProject = new ChartProject();
 
 
 function App() {
@@ -37,8 +42,10 @@ function App() {
         pageToShow=<Fuel fuel={fuel} fuelDispatch={fuelDispatch}/>
     }else if (selectedMenu?.page==='cargo'){
         pageToShow=<Cargo cargo={cargo} cargoDispatch={cargoDispatch}/>
-    }else if (selectedMenu?.page==='calced'){
-        pageToShow=<Calced/>
+    }else if (selectedMenu?.page==='cpraw'){
+        pageToShow=<CPRaw chartProject={chartProject}/>
+    }else if (selectedMenu?.page==='output'){
+        pageToShow=<Output chartProject={chartProject}/>
     }else if (selectedMenu?.page==='options'){
         pageToShow=<Options/>
     }else{
