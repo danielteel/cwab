@@ -3,7 +3,8 @@ import { Table, Input, Button, Header, Icon, ModalHeader, ModalDescription, Moda
 
 import {useState} from 'react';
 
-import { calcArm, calcMoment, toMAC } from '../common';
+import { calcArm, calcMoment, isAboutEquals, toMAC } from '../common';
+import ArmInput from './ArmInput';
 import CrewCalcModal from './CrewCalcModal';
 
 const noPadCell={padding:'1px', border:'none'};
@@ -13,6 +14,12 @@ const inputStyle={style:{paddingLeft:'5px', paddingRight:'5px'}};
 
 
 export default function Aircraft({aircraft, aircraftDispatch}){
+    const basicWeightIsZero = isAboutEquals(aircraft.basicWeight, 0);
+    const crewWeightIsZero = isAboutEquals(aircraft.crewWeight, 0);
+    const baggageWeightIsZero = isAboutEquals(aircraft.baggageWeight, 0);
+    const stewardsWeightIsZero = isAboutEquals(aircraft.stewardsWeight, 0);
+    const emergencyWeightIsZero = isAboutEquals(aircraft.emergencyWeight, 0);
+    const extraWeightIsZero = isAboutEquals(aircraft.extraWeight, 0);
 
     return (
         <>
@@ -31,18 +38,18 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                     <Table.Row>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.basicWeight} onChange={(v)=>{
-                                aircraftDispatch('set', {...aircraft, basicWeight: v})
+                                aircraftDispatch('set', {...aircraft, basicWeight: v, basicMoment: isAboutEquals(v, 0) ? 0 : aircraft.basicMoment})
                             }} fluid type='number' title='Basic Weight' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.basicMoment} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, basicMoment: v})
-                            }} fluid type='number' title='Basic Moment' input={inputStyle}/>
+                            }} fluid disabled={basicWeightIsZero} type={basicWeightIsZero?null:'number'} title='Basic Moment' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
-                            <TouchInput as={Input} value={calcArm(aircraft.basicWeight, aircraft.basicMoment)} onChange={(v)=>{
+                            <ArmInput value={calcArm(aircraft.basicWeight, aircraft.basicMoment)} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, basicMoment: calcMoment(aircraft.basicWeight, v)})
-                            }} fluid type='number' title='Basic Arm' input={inputStyle}/>
+                            }} disabled={basicWeightIsZero} title='Basic Arm' input={inputStyle}/>
                         </Table.Cell>
                     </Table.Row>
                 </Table.Body>
@@ -60,18 +67,18 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                     <Table.Row>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.crewWeight} onChange={(v)=>{
-                                aircraftDispatch('set', {...aircraft, crewWeight: v})
+                                aircraftDispatch('set', {...aircraft, crewWeight: v, crewMoment: isAboutEquals(v, 0) ? 0 : aircraft.crewMoment})
                             }} fluid type='number' title='Crew Weight' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.crewMoment} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, crewMoment: v})
-                            }} fluid type='number' title='Crew Moment' input={inputStyle}/>
+                            }} fluid disabled={crewWeightIsZero} type={crewWeightIsZero?null:'number'} title='Crew Moment' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
-                            <TouchInput as={Input} value={calcArm(aircraft.crewWeight, aircraft.crewMoment)} onChange={(v)=>{
+                            <ArmInput value={calcArm(aircraft.crewWeight, aircraft.crewMoment)} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, crewMoment: calcMoment(aircraft.crewWeight, v)})
-                            }} fluid type='number' title='Crew Arm' input={inputStyle}/>
+                            }} disabled={crewWeightIsZero} title='Crew Arm' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
                             <CrewCalcModal setCrewData={({weight, moment})=>{
@@ -92,18 +99,18 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                     <Table.Row>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.baggageWeight} onChange={(v)=>{
-                                aircraftDispatch('set', {...aircraft, baggageWeight: v})
+                                aircraftDispatch('set', {...aircraft, baggageWeight: v, baggageMoment: isAboutEquals(v, 0) ? 0 : aircraft.baggageMoment})
                             }} fluid type='number' title='Crew Bags Weight' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.baggageMoment} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, baggageMoment: v})
-                            }} fluid type='number' title='Crew Bags Moment' input={inputStyle}/>
+                            }} fluid disabled={baggageWeightIsZero} type={baggageWeightIsZero?null:'number'} title='Crew Bags Moment' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
-                            <TouchInput as={Input} value={calcArm(aircraft.baggageWeight, aircraft.baggageMoment)} onChange={(v)=>{
+                            <ArmInput value={calcArm(aircraft.baggageWeight, aircraft.baggageMoment)} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, baggageMoment: calcMoment(aircraft.baggageWeight, v)})
-                            }} fluid type='number' title='Crew Bags Arm' input={inputStyle}/>
+                            }} disabled={baggageWeightIsZero} title='Crew Bags Arm' input={inputStyle}/>
                         </Table.Cell>
                     </Table.Row>
                 </Table.Body>
@@ -119,18 +126,18 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                     <Table.Row>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.stewardsWeight} onChange={(v)=>{
-                                aircraftDispatch('set', {...aircraft, stewardsWeight: v})
+                                aircraftDispatch('set', {...aircraft, stewardsWeight: v, stewardsMoment: isAboutEquals(v, 0) ? 0 : aircraft.stewardsMoment})
                             }} fluid type='number' title='Stewards Weight' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.stewardsMoment} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, stewardsMoment: v})
-                            }} fluid type='number' title='Stewards Moment' input={inputStyle}/>
+                            }} fluid disabled={stewardsWeightIsZero} type={stewardsWeightIsZero?null:'number'} title='Stewards Moment' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
-                            <TouchInput as={Input} value={calcArm(aircraft.stewardsWeight, aircraft.stewardsMoment)} onChange={(v)=>{
+                            <ArmInput value={calcArm(aircraft.stewardsWeight, aircraft.stewardsMoment)} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, stewardsMoment: calcMoment(aircraft.stewardsWeight, v)})
-                            }} fluid type='number' title='Stewards Arm' input={inputStyle}/>
+                            }} disabled={stewardsWeightIsZero} title='Stewards Arm' input={inputStyle}/>
                         </Table.Cell>
                     </Table.Row>
                 </Table.Body>
@@ -146,18 +153,18 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                     <Table.Row>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.emergencyWeight} onChange={(v)=>{
-                                aircraftDispatch('set', {...aircraft, emergencyWeight: v})
+                                aircraftDispatch('set', {...aircraft, emergencyWeight: v, emergencyMoment: isAboutEquals(v, 0) ? 0 : aircraft.emergencyMoment})
                             }} fluid type='number' title='Emerg Weight' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.emergencyMoment} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, emergencyMoment: v})
-                            }} fluid type='number' title='Emerg Moment' input={inputStyle}/>
+                            }} fluid disabled={emergencyWeightIsZero} type={emergencyWeightIsZero?null:'number'} title='Emerg Moment' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
-                            <TouchInput as={Input} value={calcArm(aircraft.emergencyWeight, aircraft.emergencyMoment)} onChange={(v)=>{
+                            <ArmInput value={calcArm(aircraft.emergencyWeight, aircraft.emergencyMoment)} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, emergencyMoment: calcMoment(aircraft.emergencyWeight, v)})
-                            }} fluid type='number' title='Emerg Arm' input={inputStyle}/>
+                            }} disabled={emergencyWeightIsZero} title='Emerg Arm' input={inputStyle}/>
                         </Table.Cell>
                     </Table.Row>
                 </Table.Body>
@@ -173,18 +180,18 @@ export default function Aircraft({aircraft, aircraftDispatch}){
                     <Table.Row>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.extraWeight} onChange={(v)=>{
-                                aircraftDispatch('set', {...aircraft, extraWeight: v})
+                                aircraftDispatch('set', {...aircraft, extraWeight: v, extraMoment: isAboutEquals(v, 0) ? 0 : aircraft.extraMoment})
                             }} fluid type='number' title='Extra Weight' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
                             <TouchInput as={Input} value={aircraft.extraMoment} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, extraMoment: v})
-                            }} fluid type='number' title='Extra Moment' input={inputStyle}/>
+                            }} fluid disabled={extraWeightIsZero} type={extraWeightIsZero?null:'number'} title='Extra Moment' input={inputStyle}/>
                         </Table.Cell>
                         <Table.Cell>
-                            <TouchInput as={Input} value={calcArm(aircraft.extraWeight, aircraft.extraMoment)} onChange={(v)=>{
+                            <ArmInput value={calcArm(aircraft.extraWeight, aircraft.extraMoment)} onChange={(v)=>{
                                 aircraftDispatch('set', {...aircraft, extraMoment: calcMoment(aircraft.extraWeight, v)})
-                            }} fluid type='number' title='Extra Arm' input={inputStyle}/>
+                            }} disabled={extraWeightIsZero} title='Extra Arm' input={inputStyle}/>
                         </Table.Cell>
                     </Table.Row>
                 </Table.Body>

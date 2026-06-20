@@ -6,6 +6,7 @@ import {useState} from 'react';
 import {useSorted} from '../useSorted';
 
 import ConfirmationModal from './ConfirmationModal';
+import ArmInput from './ArmInput';
 
 import { calcArm, calcMoment, formatWeight, formatMoment, isAboutEquals } from '../common';
 
@@ -90,19 +91,26 @@ export default function Cargo({cargo, cargoDispatch}){
                         itemList?.length ?
                         itemList.map( item => (
                                 <Table.Row key={item.id}>
+                                    {
+                                        (() => {
+                                            const isZeroWeight = isAboutEquals(item.weight, 0);
+
+                                            return (
+                                                <>
                                     <Table.Cell style={noPadCell}>
                                         <TouchInput as={Input} value={item.name} onChange={(v)=>cargoDispatch('update', {...item, name: v})} fluid input={inputStyle}/>
                                     </Table.Cell>
                                     <Table.Cell style={noPadCell}>
                                         <TouchInput as={Input} value={item.weight} onChange={(v)=>{
-                                                cargoDispatch('update', {...item, weight: v, moment: calcMoment(v, item.arm), arm: item.arm})
+                                                const isZeroWeight = isAboutEquals(v, 0);
+                                                cargoDispatch('update', {...item, weight: v, moment: isZeroWeight ? 0 : calcMoment(v, item.arm), arm: isZeroWeight ? 0 : item.arm})
                                         }} fluid  type='number' title='Weight' input={inputStyle}/>
                                     </Table.Cell>
                                     <Table.Cell style={noPadCell}>
-                                        <TouchInput as={Input} value={item.moment} onChange={(v)=>cargoDispatch('update', {...item, moment: v, arm: calcArm(item.weight, v)})} fluid type='number' title='Moment' input={inputStyle}/>
+                                        <TouchInput as={Input} value={item.moment} onChange={(v)=>cargoDispatch('update', {...item, moment: v, arm: calcArm(item.weight, v)})} fluid disabled={isZeroWeight} type={isZeroWeight?null:'number'} title='Moment' input={inputStyle}/>
                                     </Table.Cell>
                                     <Table.Cell style={{...noPadCell, textAlign:'center'}}>
-                                        <TouchInput as={Input} value={item.arm} onChange={(v)=>cargoDispatch('update', {...item, arm: v, moment: calcMoment(item.weight, v)})} fluid disabled={isAboutEquals(item.weight,0)} type={isAboutEquals(item.weight,0)?null:'number'} title='Arm' input={inputStyle}/>
+                                        <ArmInput value={item.arm} onChange={(v)=>cargoDispatch('update', {...item, arm: v, moment: calcMoment(item.weight, v)})} disabled={isZeroWeight} input={inputStyle}/>
                                     </Table.Cell>
                                     <Table.Cell>
                                         <Checkbox fitted checked={item.expended} onChange={(e, data)=>cargoDispatch('update', {...item, expended: data.checked})}/>
@@ -112,6 +120,10 @@ export default function Cargo({cargo, cargoDispatch}){
                                             setDeleteItemId(item.id);
                                         }}/>
                                     </Table.Cell>
+                                                </>
+                                            );
+                                        })()
+                                    }
                                 </Table.Row>
                             ))
                         :
