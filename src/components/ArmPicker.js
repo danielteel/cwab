@@ -17,7 +17,7 @@ function imageXRatioToStation(xRatio){
     return Math.round(station);
 }
 
-function stationToImageXRatio(station){
+export function stationToImageXRatio(station){
     const {left, right} = stationCalibration;
     return left.xRatio + ((station - left.station) * (right.xRatio - left.xRatio)) / (right.station - left.station);
 }

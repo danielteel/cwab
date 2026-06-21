@@ -7,6 +7,7 @@ import {useSorted} from '../useSorted';
 
 import ConfirmationModal from './ConfirmationModal';
 import ArmInput from './ArmInput';
+import CargoVisualizationModal from './CargoVisualizationModal';
 
 import { calcArm, calcMoment, formatWeight, formatMoment, isAboutEquals } from '../common';
 
@@ -27,6 +28,7 @@ const sortDetails=[
 
 export default function Cargo({cargo, cargoDispatch}){
     const [deleteItemId, _setDeleteItemId] = useState(null);
+    const [visualizerOpen, setVisualizerOpen] = useState(false);
     const [itemList, sortBy, matchSort] = useSorted(sortDetails, cargo);
 
 
@@ -63,6 +65,11 @@ export default function Cargo({cargo, cargoDispatch}){
                         onNo={()=>{
                             setDeleteItemId(null);
                         }}
+            />
+            <CargoVisualizationModal
+                open={visualizerOpen}
+                cargo={itemList}
+                onClose={() => setVisualizerOpen(false)}
             />
             <Table unstackable style={{maxWidth: '768px'}} sortable>
                 <Table.Header className='stickyheader'>
@@ -150,6 +157,14 @@ export default function Cargo({cargo, cargoDispatch}){
                         null
                 }
             </Table>
+            <Button
+                content='Visualize'
+                icon='crosshairs'
+                labelPosition='left'
+                primary
+                style={{marginTop: '14px'}}
+                onClick={() => setVisualizerOpen(true)}
+            />
         </>
     );
 }

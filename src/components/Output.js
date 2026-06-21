@@ -40,9 +40,6 @@ export default function Output({chartProject}){
 
     const [outputSettings, outputSettingsDispatch] = useOutputReducer(1000);
 
-    // const [whichOpArea, setWhichOpArea] = useState('A');
-    // const [allowableTakeoffWeight, setAllowableTakeoffWeight] = useState(164000);
-    // const [allowableLandingWeight, setAllowableLandingWeight] = useState(164000);
 
     let cargoWeightTakeoff=0;
     let cargoMomentTakeoff=0;
